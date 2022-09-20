@@ -463,10 +463,10 @@ echo "======= installing zfs on rescue system =========="
   echo "zfs-dkms zfs-dkms/note-incompatible-licenses note true" | debconf-set-selections
   apt-get install --yes software-properties-common
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8CF63AD3F06FC659
-  add-apt-repository 'deb http://ppa.launchpad.net/jonathonf/zfs/ubuntu focal main'
+  add-apt-repository 'deb http://ppa.launchpad.net/jonathonf/zfs/ubuntu jammy main'
   apt update
   apt install --yes zfs-dkms zfsutils-linux
-  add-apt-repository -r 'deb http://ppa.launchpad.net/jonathonf/zfs/ubuntu focal main'
+  add-apt-repository -r 'deb http://ppa.launchpad.net/jonathonf/zfs/ubuntu jammy main'
   apt update
   find /usr/local/sbin/ -type l -exec rm {} +
   zfs --version
@@ -566,7 +566,7 @@ if [[ $v_swap_size -gt 0 ]]; then
 fi
 
 echo "======= setting up initial system packages =========="
-debootstrap --arch=amd64 focal "$c_zfs_mount_dir" "$c_deb_packages_repo"
+debootstrap --arch=amd64 jammy "$c_zfs_mount_dir" "$c_deb_packages_repo"
 
 zfs set devices=off "$v_rpool_name"
 
@@ -620,11 +620,11 @@ done
 
 echo "======= setting apt repos =========="
 cat > "$c_zfs_mount_dir/etc/apt/sources.list" <<CONF
-deb [arch=i386,amd64] $c_deb_packages_repo focal main restricted
-deb [arch=i386,amd64] $c_deb_packages_repo focal-updates main restricted
-deb [arch=i386,amd64] $c_deb_packages_repo focal-backports main restricted
-deb [arch=i386,amd64] $c_deb_packages_repo focal universe
-deb [arch=i386,amd64] $c_deb_security_repo focal-security main restricted
+deb [arch=i386,amd64] $c_deb_packages_repo jammy main restricted
+deb [arch=i386,amd64] $c_deb_packages_repo jammy-updates main restricted
+deb [arch=i386,amd64] $c_deb_packages_repo jammy-backports main restricted
+deb [arch=i386,amd64] $c_deb_packages_repo jammy universe
+deb [arch=i386,amd64] $c_deb_security_repo jammy-security main restricted
 CONF
 
 chroot_execute "apt update"
@@ -680,10 +680,10 @@ chroot_execute "rm -f /etc/localtime /etc/timezone"
 chroot_execute "dpkg-reconfigure tzdata -f noninteractive "
 
 echo "======= installing latest kernel============="
-chroot_execute "DEBIAN_FRONTEND=noninteractive apt install --yes linux-headers${v_kernel_variant}-hwe-18.04 linux-image${v_kernel_variant}-hwe-18.04"
+chroot_execute "DEBIAN_FRONTEND=noninteractive apt install --yes linux-headers${v_kernel_variant}-hwe-22.04 linux-image${v_kernel_variant}-hwe-22.04"
 if [[ $v_kernel_variant == "-virtual" ]]; then
   # linux-image-extra is only available for virtual hosts
-  chroot_execute "DEBIAN_FRONTEND=noninteractive apt install --yes linux-image-extra-virtual-hwe-20.04"
+  chroot_execute "DEBIAN_FRONTEND=noninteractive apt install --yes linux-image-extra-virtual-hwe-22.04"
 fi
 
 
